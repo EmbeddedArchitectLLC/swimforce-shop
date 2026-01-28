@@ -28,16 +28,16 @@ function priceOf(productId: string): number {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartLine[]>([]);
-
-  useEffect(() => {
+  const [items, setItems] = useState<CartLine[]>(() => {
+    // Client Components still render on the server in Next.js; guard window access.
+    if (typeof window === 'undefined') return [];
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setItems(JSON.parse(raw));
+      return raw ? (JSON.parse(raw) as CartLine[]) : [];
     } catch {
-      // ignore
+      return [];
     }
-  }, []);
+  });
 
   useEffect(() => {
     try {
