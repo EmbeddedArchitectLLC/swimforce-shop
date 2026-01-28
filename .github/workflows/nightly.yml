@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '20.19.0'
           cache: 'npm'
 
       - name: Install dependencies
@@ -50,9 +50,12 @@ jobs:
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
 
-      - name: Check Stripe API status
+      - name: Check Stripe status
         run: |
-          curl -s -o /dev/null -w "%{http_code}" https://api.stripe.com/v1/health | grep -q "200" && echo "Stripe API: OK" || echo "Stripe API: DEGRADED"
+          set -e
+          STATUS=$(curl -fsSL https://status.stripe.com/api/v2/status.json | jq -r .status.indicator)
+          echo "Stripe status indicator: $STATUS"
+          test "$STATUS" = "none"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

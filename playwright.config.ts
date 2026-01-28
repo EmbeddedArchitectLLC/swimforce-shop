@@ -17,9 +17,15 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'npm run start',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
+  // Only spin up a local web server when testing localhost.
+  webServer:
+    (process.env.NEXT_PUBLIC_APP_URL || '').includes('localhost') ||
+    (process.env.NEXT_PUBLIC_APP_URL || '').includes('127.0.0.1') ||
+    !process.env.NEXT_PUBLIC_APP_URL
+      ? {
+          command: 'npm run start',
+          url: 'http://localhost:3000',
+          reuseExistingServer: !process.env.CI,
+        }
+      : undefined,
 });
