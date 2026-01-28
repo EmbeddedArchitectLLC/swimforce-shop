@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { CartProvider } from "@/components/cart/CartContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,8 @@ function Navigation() {
             </div>
             <span className="font-bold text-xl">SwimForce</span>
           </Link>
-          
-          <div className="flex space-x-8">
+
+          <div className="flex items-center space-x-6">
             <Link href="/shop" className="hover:text-blue-200 transition">
               Shop
             </Link>
@@ -32,6 +33,12 @@ function Navigation() {
             </Link>
             <Link href="/training" className="hover:text-blue-200 transition">
               Training
+            </Link>
+            <Link
+              href="/cart"
+              className="bg-white/15 hover:bg-white/25 transition px-3 py-2 rounded-lg"
+            >
+              Cart
             </Link>
           </div>
         </div>
@@ -83,11 +90,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} min-h-screen flex flex-col`}>
-        <Navigation />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <CartProvider>
+          <Navigation />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );
