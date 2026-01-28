@@ -36,8 +36,9 @@ export default function CartPage() {
       } else {
         throw new Error('Missing Stripe checkout URL');
       }
-    } catch (e: any) {
-      setError(e?.message || 'Checkout failed');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Checkout failed';
+      setError(msg);
     } finally {
       setLoading(false);
     }
